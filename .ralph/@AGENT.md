@@ -1,158 +1,189 @@
-# Agent Build Instructions
+# Agent Build Instructions: Data Engineering Book
 
-## Project Setup
-```bash
-# Install dependencies (example for Node.js project)
-npm install
+## Project Overview
+This is a technical book project, not a software project. The "build" process produces Markdown chapters that will be compiled into a final book.
 
-# Or for Python project
-pip install -r requirements.txt
-
-# Or for Rust project  
-cargo build
+## Project Structure
+```
+data-engineering/
+├── src/
+│   ├── chapters/           # Main chapter content
+│   │   ├── 01-landscape/
+│   │   │   └── chapter.md
+│   │   ├── 02-first-principles/
+│   │   │   └── chapter.md
+│   │   └── ...
+│   ├── appendices/         # Reference material
+│   │   ├── a-comparison-tables.md
+│   │   ├── b-decision-flowcharts.md
+│   │   ├── c-glossary.md
+│   │   └── d-further-reading.md
+│   └── front-matter/       # Book introduction
+│       ├── preface.md
+│       └── introduction.md
+├── .ralph/
+│   ├── specs/              # Book specifications
+│   │   ├── requirements.md
+│   │   ├── chapter-outline.md
+│   │   └── writing-guidelines.md
+│   ├── @fix_plan.md        # Chapter progress tracking
+│   ├── @AGENT.md           # This file
+│   └── PROMPT.md           # Ralph instructions
+└── README.md
 ```
 
-## Running Tests
+## Quality Validation
+
+### Word Count Check
 ```bash
-# Node.js
-npm test
+# Count words in a chapter
+wc -w src/chapters/*/chapter.md
 
-# Python
-pytest
-
-# Rust
-cargo test
+# Total word count across all chapters
+find src/chapters -name "chapter.md" -exec cat {} + | wc -w
 ```
 
-## Build Commands
+### Markdown Linting (Optional)
 ```bash
-# Production build
-npm run build
-# or
-cargo build --release
+# If markdownlint is installed
+npx markdownlint src/chapters/**/*.md
+
+# Or use mdl
+mdl src/chapters/
 ```
 
-## Development Server
+### Link Checking (Optional)
 ```bash
-# Start development server
-npm run dev
-# or
-cargo run
+# Check for broken internal references
+grep -rn "See Chapter" src/chapters/ | grep -v "Chapter [0-9]"
+```
+
+## Chapter Writing Process
+
+### 1. Start a New Chapter
+```bash
+# Create chapter directory
+mkdir -p src/chapters/XX-chapter-name
+
+# Create chapter file with frontmatter template
+cat > src/chapters/XX-chapter-name/chapter.md << 'EOF'
+---
+chapter: X
+title: "Chapter Title Here"
+estimated_pages: XX-XX
+status: draft
+last_updated: YYYY-MM-DD
+---
+
+# Chapter Title Here
+
+[Chapter content begins here]
+EOF
+```
+
+### 2. Research Phase
+- Use WebSearch to verify current state of technologies
+- Check official documentation for latest features
+- Review authoritative engineering blogs (Netflix, Uber, etc.)
+- Note version numbers and dates for time-sensitive information
+
+### 3. Writing Phase
+- Follow structure in writing-guidelines.md
+- Write section by section
+- Add diagrams as Mermaid code blocks
+- Update glossary with new terms
+
+### 4. Review Phase
+Run through writing-guidelines.md checklist:
+- [ ] Opens with engaging hook
+- [ ] Historical context explains "why"
+- [ ] Core concepts from first principles
+- [ ] Mental models explicit
+- [ ] Trade-offs articulated
+- [ ] Decision framework included
+- [ ] Cross-references accurate
+- [ ] Summary captures key points
+
+## Git Workflow for Book
+
+### Commit Conventions
+```bash
+# Chapter work
+git commit -m "chapter(01): Complete Data Engineering Landscape"
+git commit -m "chapter(05): Add Iceberg deep dive section"
+
+# Appendix work
+git commit -m "appendix(c): Add table format comparison"
+
+# Research/planning
+git commit -m "docs: Update chapter outline with case studies"
+
+# Fixes/edits
+git commit -m "edit(03): Fix consistency model explanation"
+```
+
+### Branch Strategy (if desired)
+```bash
+# Work on one chapter at a time
+git checkout -b chapter/05-table-formats
+# ... write chapter ...
+git add .
+git commit -m "chapter(05): Complete Table Formats chapter"
+git checkout main
+git merge chapter/05-table-formats
 ```
 
 ## Key Learnings
-- Update this section when you learn new build optimizations
-- Document any gotchas or special setup requirements
-- Keep track of the fastest test/build cycle
 
-## Feature Development Quality Standards
+### Content Quality
+- First principles before implementation details
+- Always explain WHY before HOW
+- Historical context makes technologies memorable
+- Decision frameworks > prescriptive recommendations
 
-**CRITICAL**: All new features MUST meet the following mandatory requirements before being considered complete.
+### Writing Efficiency
+- Research phase should be time-boxed (don't go down rabbit holes)
+- Write section-by-section, don't try to write entire chapter at once
+- Keep glossary updated as you write (don't defer)
+- Cross-references can be placeholder `[See Chapter X]` until chapter exists
 
-### Testing Requirements
+### Technical Accuracy
+- Technologies evolve quickly - note versions and dates
+- Mark what's fundamental vs what's current-state
+- When in doubt, reference official documentation
+- Engineering blogs provide real-world validation
 
-- **Minimum Coverage**: 85% code coverage ratio required for all new code
-- **Test Pass Rate**: 100% - all tests must pass, no exceptions
-- **Test Types Required**:
-  - Unit tests for all business logic and services
-  - Integration tests for API endpoints or main functionality
-  - End-to-end tests for critical user workflows
-- **Coverage Validation**: Run coverage reports before marking features complete:
-  ```bash
-  # Examples by language/framework
-  npm run test:coverage
-  pytest --cov=src tests/ --cov-report=term-missing
-  cargo tarpaulin --out Html
-  ```
-- **Test Quality**: Tests must validate behavior, not just achieve coverage metrics
-- **Test Documentation**: Complex test scenarios must include comments explaining the test strategy
+## Chapter Completion Checklist
 
-### Git Workflow Requirements
+Before marking any chapter complete in @fix_plan.md:
 
-Before moving to the next feature, ALL changes must be:
+- [ ] All sections from chapter-outline.md are written
+- [ ] Word count appropriate for estimated pages (~300 words/page)
+- [ ] Writing guidelines checklist passed
+- [ ] Diagrams included where specified
+- [ ] New terms added to glossary (Appendix C)
+- [ ] Cross-references to existing chapters are accurate
+- [ ] Chapter metadata (frontmatter) is complete
+- [ ] Committed to git with descriptive message
+- [ ] @fix_plan.md updated with completion
 
-1. **Committed with Clear Messages**:
-   ```bash
-   git add .
-   git commit -m "feat(module): descriptive message following conventional commits"
-   ```
-   - Use conventional commit format: `feat:`, `fix:`, `docs:`, `test:`, `refactor:`, etc.
-   - Include scope when applicable: `feat(api):`, `fix(ui):`, `test(auth):`
-   - Write descriptive messages that explain WHAT changed and WHY
+## Estimated Book Metrics
 
-2. **Pushed to Remote Repository**:
-   ```bash
-   git push origin <branch-name>
-   ```
-   - Never leave completed features uncommitted
-   - Push regularly to maintain backup and enable collaboration
-   - Ensure CI/CD pipelines pass before considering feature complete
+| Metric | Target |
+|--------|--------|
+| Total Pages | 560-620 |
+| Total Words | ~170,000-185,000 |
+| Chapters | 17 |
+| Appendices | 4 |
+| Diagrams | 40-60 |
 
-3. **Branch Hygiene**:
-   - Work on feature branches, never directly on `main`
-   - Branch naming convention: `feature/<feature-name>`, `fix/<issue-name>`, `docs/<doc-update>`
-   - Create pull requests for all significant changes
+## Progress Tracking
 
-4. **Ralph Integration**:
-   - Update .ralph/@fix_plan.md with new tasks before starting work
-   - Mark items complete in .ralph/@fix_plan.md upon completion
-   - Update .ralph/PROMPT.md if development patterns change
-   - Test features work within Ralph's autonomous loop
+Update these as chapters complete:
 
-### Documentation Requirements
-
-**ALL implementation documentation MUST remain synchronized with the codebase**:
-
-1. **Code Documentation**:
-   - Language-appropriate documentation (JSDoc, docstrings, etc.)
-   - Update inline comments when implementation changes
-   - Remove outdated comments immediately
-
-2. **Implementation Documentation**:
-   - Update relevant sections in this AGENT.md file
-   - Keep build and test commands current
-   - Update configuration examples when defaults change
-   - Document breaking changes prominently
-
-3. **README Updates**:
-   - Keep feature lists current
-   - Update setup instructions when dependencies change
-   - Maintain accurate command examples
-   - Update version compatibility information
-
-4. **AGENT.md Maintenance**:
-   - Add new build patterns to relevant sections
-   - Update "Key Learnings" with new insights
-   - Keep command examples accurate and tested
-   - Document new testing patterns or quality gates
-
-### Feature Completion Checklist
-
-Before marking ANY feature as complete, verify:
-
-- [ ] All tests pass with appropriate framework command
-- [ ] Code coverage meets 85% minimum threshold
-- [ ] Coverage report reviewed for meaningful test quality
-- [ ] Code formatted according to project standards
-- [ ] Type checking passes (if applicable)
-- [ ] All changes committed with conventional commit messages
-- [ ] All commits pushed to remote repository
-- [ ] .ralph/@fix_plan.md task marked as complete
-- [ ] Implementation documentation updated
-- [ ] Inline code comments updated or added
-- [ ] .ralph/@AGENT.md updated (if new patterns introduced)
-- [ ] Breaking changes documented
-- [ ] Features tested within Ralph loop (if applicable)
-- [ ] CI/CD pipeline passes
-
-### Rationale
-
-These standards ensure:
-- **Quality**: High test coverage and pass rates prevent regressions
-- **Traceability**: Git commits and .ralph/@fix_plan.md provide clear history of changes
-- **Maintainability**: Current documentation reduces onboarding time and prevents knowledge loss
-- **Collaboration**: Pushed changes enable team visibility and code review
-- **Reliability**: Consistent quality gates maintain production stability
-- **Automation**: Ralph integration ensures continuous development practices
-
-**Enforcement**: AI agents should automatically apply these standards to all feature development tasks without requiring explicit instruction for each task.
+```
+Chapters Complete: 0/17
+Appendices Complete: 0/4
+Estimated Words Written: 0
+Current Phase: 1 (Foundations)
+```
