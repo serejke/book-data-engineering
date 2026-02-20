@@ -67,4 +67,4 @@ This book is designed for experienced software engineers transitioning into data
 
 ## License
 
-All rights reserved.
+This work is licensed under [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/).
