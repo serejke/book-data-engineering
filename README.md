@@ -32,6 +32,7 @@ This book is designed for experienced software engineers transitioning into data
 - OLAP databases (ClickHouse, DuckDB)
 - Transformation (dbt)
 - Data quality and observability
+- LLM-enhanced data pipelines
 
 ## Start Reading
 
@@ -57,6 +58,7 @@ This book is designed for experienced software engineers transitioning into data
 15. [Architecture Patterns](src/chapters/15-architecture-patterns/chapter.md)
 16. [Case Studies: Architectures in Practice](src/chapters/16-case-studies/chapter.md)
 17. [Evaluating New Technologies](src/chapters/17-evaluating-technologies/chapter.md)
+18. [LLM-Enhanced Data Pipelines](src/chapters/18-llm-enhanced-pipelines/chapter.md)
 
 ### Appendices
 
